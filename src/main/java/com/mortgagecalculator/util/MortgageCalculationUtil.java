@@ -3,7 +3,6 @@ package com.mortgagecalculator.util;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Utility class for mortgage calculations and formatting.
