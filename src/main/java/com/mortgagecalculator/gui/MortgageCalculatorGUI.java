@@ -5,6 +5,7 @@ import com.mortgagecalculator.util.MortgageCalculationUtil;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,11 @@ import java.util.stream.IntStream;
  * Graphical user interface for the mortgage calculator.
  */
 public class MortgageCalculatorGUI extends JFrame {
+
+    // Warmer light orange color for background
+    private static final Color WARM_LIGHT_ORANGE_BACKGROUND = new Color(255, 218, 185);
+    // Dark green color for the calculate button
+    private static final Color DARK_GREEN_BUTTON = new Color(34, 139, 34);
 
     private JTextField principalField;
     private JTextField interestRateField;
@@ -29,16 +35,25 @@ public class MortgageCalculatorGUI extends JFrame {
     public MortgageCalculatorGUI() {
         setTitle("Mortgage Calculator");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        // Increased size to accommodate all sections plus 25 rows in amortization table
+        setSize(1000, 950);
         setLocationRelativeTo(null);
+        
+        // Set warm light orange background for the frame
+        getContentPane().setBackground(WARM_LIGHT_ORANGE_BACKGROUND);
         
         // Use Java 8 lambdas for layout and component creation
         createAndShowGUI();
     }
     
     private void createAndShowGUI() {
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
+        mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(WARM_LIGHT_ORANGE_BACKGROUND);
+        
+        // Create a container for input and results panels
+        JPanel topContainer = new JPanel(new BorderLayout(10, 10));
+        topContainer.setBackground(WARM_LIGHT_ORANGE_BACKGROUND);
         
         // Input panel at the top
         JPanel inputPanel = createInputPanel();
@@ -49,24 +64,36 @@ public class MortgageCalculatorGUI extends JFrame {
         // Amortization panel at the bottom
         JPanel amortizationPanel = createAmortizationPanel();
         
+        // Add input and results to top container
+        topContainer.add(inputPanel, BorderLayout.NORTH);
+        topContainer.add(resultsPanel, BorderLayout.CENTER);
+        
         // Add panels to the main panel
-        mainPanel.add(inputPanel, BorderLayout.NORTH);
-        mainPanel.add(resultsPanel, BorderLayout.CENTER);
-        mainPanel.add(amortizationPanel, BorderLayout.SOUTH);
+        mainPanel.add(topContainer, BorderLayout.NORTH);
+        mainPanel.add(amortizationPanel, BorderLayout.CENTER);
         
         add(mainPanel);
     }
     
     private JPanel createInputPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Loan Information"));
+        
+        // Create titled border with matching font size
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Loan Information");
+        titledBorder.setTitleFont(new Font("SansSerif", Font.PLAIN, 16));
+        panel.setBorder(titledBorder);
+        panel.setBackground(WARM_LIGHT_ORANGE_BACKGROUND);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(8, 8, 8, 8);
         
-        // Create input fields with labels using Java 8 functional approach
-        Function<String, JLabel> createLabel = text -> new JLabel(text + ":");
+        // Create input fields with labels using Java 8 functional approach with larger font
+        Function<String, JLabel> createLabel = text -> {
+            JLabel label = new JLabel(text + ":");
+            label.setFont(new Font("SansSerif", Font.PLAIN, 16));
+            return label;
+        };
         
         // Principal amount
         gbc.gridx = 0;
@@ -95,12 +122,18 @@ public class MortgageCalculatorGUI extends JFrame {
         loanTermField = new JTextField(10);
         panel.add(loanTermField, gbc);
         
-        // Calculate button
+        // Calculate button with dark green background and white text
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(15, 8, 8, 8);
         JButton calculateButton = new JButton("Calculate");
+        calculateButton.setBackground(DARK_GREEN_BUTTON);
+        calculateButton.setForeground(Color.WHITE);
+        calculateButton.setFont(new Font("SansSerif", Font.BOLD, 16));
+        calculateButton.setOpaque(true);
+        calculateButton.setBorderPainted(false);
         calculateButton.addActionListener(this::calculateMortgage);
         panel.add(calculateButton, gbc);
         
@@ -109,49 +142,67 @@ public class MortgageCalculatorGUI extends JFrame {
     
     private JPanel createResultsPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Mortgage Summary"));
+        
+        // Create titled border with matching font size
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Mortgage Summary");
+        titledBorder.setTitleFont(new Font("SansSerif", Font.PLAIN, 16));
+        panel.setBorder(titledBorder);
+        panel.setBackground(WARM_LIGHT_ORANGE_BACKGROUND);
+        
+        // Set explicit preferred size to ensure adequate space for all labels
+        panel.setPreferredSize(new Dimension(400, 180));
+        panel.setMinimumSize(new Dimension(400, 180));
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        // Generous vertical spacing between components
+        gbc.insets = new Insets(15, 10, 15, 10);
         
-        // Create labels using Java 8 functional approach
+        // Create labels using Java 8 functional approach with larger font
         Function<String, JLabel> createLabel = text -> {
             JLabel label = new JLabel(text + ":");
             label.setHorizontalAlignment(SwingConstants.RIGHT);
+            label.setFont(new Font("SansSerif", Font.PLAIN, 16));
             return label;
         };
         
         Function<String, JLabel> createValueLabel = text -> {
             JLabel label = new JLabel(text);
-            label.setFont(label.getFont().deriveFont(Font.BOLD));
+            label.setFont(new Font("SansSerif", Font.BOLD, 16));
             return label;
         };
         
         // Monthly payment
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.weightx = 0.4;
         panel.add(createLabel.apply("Monthly Payment"), gbc);
         
         gbc.gridx = 1;
+        gbc.weightx = 0.6;
         monthlyPaymentValueLabel = createValueLabel.apply("$0.00");
         panel.add(monthlyPaymentValueLabel, gbc);
         
         // Total payment
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.weightx = 0.4;
         panel.add(createLabel.apply("Total Payment"), gbc);
         
         gbc.gridx = 1;
+        gbc.weightx = 0.6;
         totalPaymentValueLabel = createValueLabel.apply("$0.00");
         panel.add(totalPaymentValueLabel, gbc);
         
         // Total interest
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.weightx = 0.4;
         panel.add(createLabel.apply("Total Interest"), gbc);
         
         gbc.gridx = 1;
+        gbc.weightx = 0.6;
         totalInterestValueLabel = createValueLabel.apply("$0.00");
         panel.add(totalInterestValueLabel, gbc);
         
@@ -160,12 +211,24 @@ public class MortgageCalculatorGUI extends JFrame {
     
     private JPanel createAmortizationPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Amortization Schedule (Yearly)"));
+        
+        // Create titled border with matching font size
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Amortization Schedule (Yearly)");
+        titledBorder.setTitleFont(new Font("SansSerif", Font.PLAIN, 16));
+        panel.setBorder(titledBorder);
+        panel.setBackground(WARM_LIGHT_ORANGE_BACKGROUND);
         
         // Create table model and table
         String[] columnNames = {"Year", "Payment", "Principal", "Interest", "Remaining Balance"};
         tableModel = new DefaultTableModel(columnNames, 0);
         amortizationTable = new JTable(tableModel);
+        
+        // Set larger font for table
+        amortizationTable.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        amortizationTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
+        
+        // Set row height to accommodate larger font
+        amortizationTable.setRowHeight(20);
         
         // Use Java 8 streams to set column widths
         IntStream.range(0, columnNames.length)
@@ -173,6 +236,11 @@ public class MortgageCalculatorGUI extends JFrame {
                         .setPreferredWidth(i == 0 ? 50 : 150));
         
         JScrollPane scrollPane = new JScrollPane(amortizationTable);
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        
+        // Set preferred size to show approximately 25 rows
+        scrollPane.setPreferredSize(new Dimension(0, 545));
+        
         panel.add(scrollPane, BorderLayout.CENTER);
         
         return panel;
