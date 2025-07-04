@@ -3,9 +3,6 @@ package com.mortgagecalculator.model;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-/**
- * Represents a mortgage loan with its parameters and calculated values.
- */
 public class Mortgage {
     private final double principal;
     private final double annualInterestRate;
@@ -18,13 +15,6 @@ public class Mortgage {
     private final double totalPayment;
     private final double totalInterest;
     
-    /**
-     * Creates a new Mortgage instance with the given parameters.
-     * 
-     * @param principal The loan amount
-     * @param annualInterestRate The annual interest rate (percentage)
-     * @param loanTermInYears The loan term in years
-     */
     public Mortgage(double principal, double annualInterestRate, int loanTermInYears) {
         this.principal = principal;
         this.annualInterestRate = annualInterestRate;
@@ -48,11 +38,6 @@ public class Mortgage {
         this.totalInterest = totalPayment - principal;
     }
     
-    /**
-     * Generates an amortization schedule.
-     * 
-     * @return An array of PaymentRecord objects for each payment in the schedule
-     */
     public PaymentRecord[] generateAmortizationSchedule() {
         PaymentRecord[] schedule = new PaymentRecord[numberOfPayments];
         // Create a wrapper class to hold the mutable state
@@ -93,11 +78,6 @@ public class Mortgage {
         return schedule;
     }
     
-    /**
-     * Generates a yearly amortization schedule.
-     * 
-     * @return An array of PaymentRecord objects summarizing each year
-     */
     public PaymentRecord[] generateYearlyAmortizationSchedule() {
         PaymentRecord[] monthlySchedule = generateAmortizationSchedule();
         PaymentRecord[] yearlySchedule = new PaymentRecord[loanTermInYears];
@@ -163,9 +143,6 @@ public class Mortgage {
         return totalInterest;
     }
     
-    /**
-     * Inner class representing a single payment or period in the amortization schedule.
-     */
     public static class PaymentRecord {
         private final int paymentNumber;
         private final double payment;

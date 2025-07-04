@@ -8,9 +8,6 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
-/**
- * Command-line interface for the mortgage calculator.
- */
 public class MortgageCalculator {
 
     public static void main(String[] args) {

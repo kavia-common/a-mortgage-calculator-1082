@@ -13,9 +13,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-/**
- * Graphical user interface for the mortgage calculator.
- */
 public class MortgageCalculatorGUI extends JFrame {
 
     // Warmer light orange color for background
