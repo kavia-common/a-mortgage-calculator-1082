@@ -1,6 +1,6 @@
 # A Mortgage Calculator
 
-A simple mortgage calculator application built with Java 8.
+A simple mortgage calculator application built with Java.
 
 ## Features
 
